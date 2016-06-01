@@ -1,64 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>For tonight we dine in JAKARTA</title>
-    <description>A blog from outerspace, beware I&#39;m the Dragonborn</description>
-    <link>http://localhost:4000</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <title>Krisan Alfa Timur</title>
+    <description>Dovahkiin, naal ok zin los vahriin.</description>
+    <link>https://krisanalfa.github.io</link>
+    <atom:link href="https://krisanalfa.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>Getting started</title>
+        <title>Funny Developer Comments</title>
         
         
-          <description>The concept of working with a static site generator using the terminal or console &lt;b&gt;might be new to you&lt;/b&gt;, but I&#39;ll do my very best to guide you through the process.</description>
+          <description>Here is a collection of funny source code comments, provided by developers all over the world. Take a look at it, it could definitely make your day.</description>
         
-        <pubDate>Fri, 09 May 2014 00:00:00 +0700</pubDate>
-        <link>http://localhost:4000/guides/2014/05/09/getting-started.html</link>
-        <guid isPermaLink="true">http://localhost:4000/guides/2014/05/09/getting-started.html</guid>
-      </item>
-    
-      <item>
-        <title>Adding posts and pages</title>
-        
-        
-          <description>&lt;i&gt;Posts and pages are slightly different in Jekyll&lt;/i&gt;, but adding them to your new website should be easy nevertheless. Especially writing contents in &lt;b&gt;Markdown&lt;/b&gt; or &lt;b&gt;Textile&lt;/b&gt; is a breeze compared to most clunky wysiwyg editors these days.</description>
-        
-        <pubDate>Thu, 08 May 2014 00:00:00 +0700</pubDate>
-        <link>http://localhost:4000/guides/2014/05/08/adding-posts-and-pages.html</link>
-        <guid isPermaLink="true">http://localhost:4000/guides/2014/05/08/adding-posts-and-pages.html</guid>
-      </item>
-    
-      <item>
-        <title>Adding media with captions</title>
-        
-        
-          <description>Adding &lt;b&gt;images&lt;/b&gt;, &lt;b&gt;videos&lt;/b&gt; and &lt;b&gt;audio files&lt;/b&gt; to a website shouldn&#39;t be difficult. That&#39;s why &lt;i&gt;Hashtag for Jekyll&lt;/i&gt; includes some &lt;b&gt;simple short codes&lt;/b&gt; which make it easy to add all of that — even better, you can also add captions and links to each one.</description>
-        
-        <pubDate>Wed, 07 May 2014 00:00:00 +0700</pubDate>
-        <link>http://localhost:4000/guides/2014/05/07/adding-media-with-captions.html</link>
-        <guid isPermaLink="true">http://localhost:4000/guides/2014/05/07/adding-media-with-captions.html</guid>
-      </item>
-    
-      <item>
-        <title>Configuration</title>
-        
-        
-          <description>Wether you&#39;d like to change the sites &lt;b&gt;title&lt;/b&gt;, &lt;b&gt;description&lt;/b&gt; and &lt;b&gt;contact email address&lt;/b&gt; or just like to enable the &lt;b&gt;comment system&lt;/b&gt; or &lt;b&gt;Google Analytics&lt;/b&gt; — &lt;i&gt;all of it can be done in one single place&lt;/i&gt;.</description>
-        
-        <pubDate>Tue, 06 May 2014 00:00:00 +0700</pubDate>
-        <link>http://localhost:4000/guides/2014/05/06/configuration.html</link>
-        <guid isPermaLink="true">http://localhost:4000/guides/2014/05/06/configuration.html</guid>
-      </item>
-    
-      <item>
-        <title>Front-matter matters, literally</title>
-        
-        
-          <description>By now you should be already familiar with the concept of front-matter to control content and layout. Aside from basic options, &lt;b&gt;there are a few more&lt;/b&gt; I&#39;d like to introduce you to — &lt;i&gt;even though they&#39;re just optional&lt;/i&gt;.</description>
-        
-        <pubDate>Mon, 05 May 2014 00:00:00 +0700</pubDate>
-        <link>http://localhost:4000/guides/2014/05/05/front-matter.html</link>
-        <guid isPermaLink="true">http://localhost:4000/guides/2014/05/05/front-matter.html</guid>
+        <pubDate>Wed, 01 Jun 2016 00:00:00 +0700</pubDate>
+        <link>https://krisanalfa.github.io/2016/06/01/funny-developer-comments.html</link>
+        <guid isPermaLink="true">https://krisanalfa.github.io/2016/06/01/funny-developer-comments.html</guid>
       </item>
     
   </channel>
