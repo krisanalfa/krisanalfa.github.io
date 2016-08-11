@@ -1,0 +1,149 @@
+<!DOCTYPE html> <html> <head> <title>Debugging Happily in Yii2</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1" /> <meta name="description" content="Dovahkiin, naal ok zin los vahriin." /> <meta property="og:type" content="article" /> <meta property="og:site_name" content="Krisan Alfa Timur" /> <meta property="og:title" content="Debugging Happily in Yii2" /> <meta property="og:description" content="Dovahkiin, naal ok zin los vahriin." /> <meta property="og:url" content="https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html" /> <meta property="og:image" content="https://krisanalfa.github.io/images/header-1.jpg" /> <meta name="twitter:card" content="summary" /> <meta name="twitter:title" content="Debugging Happily in Yii2" /> <meta name="twitter:description" content="Dovahkiin, naal ok zin los vahriin." /> <meta name="twitter:url" content="https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html" /> <meta name="twitter:image" content="https://krisanalfa.github.io/images/header-1.jpg" /> <meta name="twitter:site" content="@krisanalfa" /> <link rel="alternate" href="/feed.xml" type="application/rss+xml" title="Debugging Happily in Yii2" /> <link rel="canonical" href="/2016/08/11/debugging-happily-in-yii2.html" /> <link rel="stylesheet" href="/assets/styles.css" /> <!--[if lt IE 9]> <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]--> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-78621838-1', 'auto'); ga('send', 'pageview'); </script> </head> <body> <header class="animated fadeInDownBig"> <a href="/" title="Back to Homepage" class="logo">Krisan Alfa Timur</a> <button class="toggle">Menu</button> <nav> <ul> <li><a href="/" title="Home">Home</a></li> <li><a href="/2016/06/01/funny-developer-comments.html" title="Funny Developer Comments">Funny Developer Comments</a></li> <li><a href="/2016/08/11/debugging-happily-in-yii2.html" title="Debugging Happily in Yii2">Debugging Happily in Yii2</a></li> </ul> </nav> </header> <section class="content"> <article> <header class="gradient-1" data-animation="fadeInDownBig"> <div class="overlay" style="background-image: url(/images/header-1.jpg);" data-parallax="9"></div> <div class="excerpt"> <span class="title">6 minutes</span> <h1><a href="/2016/08/11/debugging-happily-in-yii2.html" title="Debugging Happily in Yii2">Debugging Happily in Yii2</a></h1> <p>Variable Dumping in Yii2 has never been so easy until you read this</p> <span class="meta">Published <b>Aug 11, 2016</b> in <b></b></span> </div> <a href="#" title="Scroll" class="scroll">Scroll</a> </header> <div class="body" data-animation="fadeInUp"> <p>In the past few days, I hear some of my friends in ‘my-ex-office’ using Yii2 as their “development framework”. In my opinion, it’s all up to developers there to decide what framework is the best for their environment and common project. But there’s a lack in Yii2 for many developers there who used to develop web app using Laravel. The <code class="highlighter-rouge">dump</code> and <code class="highlighter-rouge">dd</code> method. In this article, I will explain how to bring this feature to Yii2.</p> <h2 id="using-the-component">Using The Component</h2> <p>Yii2 keeps it philosophy to use component instead of Laravel Service Provider. This component is lazy load, means it will never exists on your runtime unless you need it somehow. I’m using Yii2 Component to register the <code class="highlighter-rouge">dump</code> and <code class="highlighter-rouge">dd</code> method.</p> <h3 id="writing-the-component">Writing The Component</h3> <p>First, create a class inside <code class="highlighter-rouge">components</code> folder right under your root application folder, and give it a name <code class="highlighter-rouge">Debugger.php</code>:</p> <div class="highlighter-rouge"><pre class="highlight"><code>.
+├── assets
+│   └── AppAsset.php
+├── commands
+│   └── HelloController.php
+├── components
+│   └── Debugger.php -&gt; Here's your new file
+[... ommited ...]
+</code></pre></div> <p>Below is the <code class="highlighter-rouge">Debugger.php</code> content:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">app\components</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\VarDumper\Dumper\CliDumper</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\VarDumper\Cloner\VarCloner</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\VarDumper\Dumper\HtmlDumper</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Debugger</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">dd</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nb">array_map</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">dump</span><span class="p">(</span><span class="nv">$value</span><span class="p">);</span>
+        <span class="p">},</span> <span class="nb">func_get_args</span><span class="p">());</span>
+
+        <span class="k">die</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">dump</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nx">CliDumper</span><span class="o">::</span><span class="na">class</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$dumper</span> <span class="o">=</span> <span class="p">(</span><span class="nx">PHP_SAPI</span> <span class="o">===</span> <span class="s1">'cli'</span><span class="p">)</span>
+                <span class="o">?</span> <span class="k">new</span> <span class="nx">CliDumper</span>
+                <span class="o">:</span> <span class="k">new</span> <span class="nx">HtmlDumper</span><span class="p">;</span>
+
+            <span class="nv">$dumper</span><span class="o">-&gt;</span><span class="na">dump</span><span class="p">((</span><span class="k">new</span> <span class="nx">VarCloner</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">cloneVar</span><span class="p">(</span><span class="nv">$value</span><span class="p">));</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$value</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div> <h3 id="registerring-the-component">Registerring The Component</h3> <p>To register this component, open your configuration, find the <code class="highlighter-rouge">components</code> section like so:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'basic'</span><span class="p">,</span>
+    <span class="s1">'basePath'</span> <span class="o">=&gt;</span> <span class="nb">dirname</span><span class="p">(</span><span class="nx">__DIR__</span><span class="p">),</span>
+    <span class="s1">'bootstrap'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'log'</span><span class="p">],</span>
+    <span class="s1">'components'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'request'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="c1">// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+</span>            <span class="s1">'cookieValidationKey'</span> <span class="o">=&gt;</span> <span class="s1">'bUNSeF096m4EaatIrhhKSmDTPtBn6Kb8'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s1">'cache'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'yii\caching\FileCache'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="c1">// [... ommited ...]
+</span>    <span class="p">],</span>
+    <span class="s1">'params'</span> <span class="o">=&gt;</span> <span class="nv">$params</span><span class="p">,</span>
+<span class="p">];</span>
+</code></pre></div> <p>There inside your <code class="highlighter-rouge">components</code> configuration add this line:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code>'debugger' =&gt; [
+    'class' =&gt; 'app\components\Debugger',
+],
+</code></pre></div> <p>So your final configuration like this:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'basic'</span><span class="p">,</span>
+    <span class="s1">'basePath'</span> <span class="o">=&gt;</span> <span class="nb">dirname</span><span class="p">(</span><span class="nx">__DIR__</span><span class="p">),</span>
+    <span class="s1">'bootstrap'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'log'</span><span class="p">],</span>
+    <span class="s1">'components'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'debugger'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'app\components\Debugger'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s1">'request'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="c1">// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+</span>            <span class="s1">'cookieValidationKey'</span> <span class="o">=&gt;</span> <span class="s1">'bUNSeF096m4EaatIrhhKSmDTPtBn6Kb8'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s1">'cache'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'yii\caching\FileCache'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="c1">// [... ommited ...]
+</span>    <span class="p">],</span>
+    <span class="s1">'params'</span> <span class="o">=&gt;</span> <span class="nv">$params</span><span class="p">,</span>
+<span class="p">];</span>
+</code></pre></div> <h3 id="using-your-debugger">Using Your Debugger</h3> <p>You can acess your debugger anywhere with this snippet:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nx">Yii</span><span class="o">::</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="na">debugger</span><span class="o">-&gt;</span><span class="na">dump</span><span class="p">(</span><span class="s1">'Something you want to debug here'</span><span class="p">);</span>
+
+<span class="c1">// Or if you want to stop PHP execution immediately after dumping variable
+</span><span class="nx">Yii</span><span class="o">::</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="na">debugger</span><span class="o">-&gt;</span><span class="na">dd</span><span class="p">(</span><span class="s1">'Something you want to debug here'</span><span class="p">);</span>
+</code></pre></div> <h3 id="bonus-registering-your-dd-or-dump-to-global-level">[BONUS] Registering Your <code class="highlighter-rouge">dd</code> or <code class="highlighter-rouge">dump</code> to Global Level</h3> <p>Sometimes you’re too lazy to type:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nx">Yii</span><span class="o">::</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="na">debugger</span><span class="o">-&gt;</span><span class="na">dd</span><span class="p">(</span><span class="s1">'Something you want to debug here'</span><span class="p">);</span>
+</code></pre></div> <p>All you want to type is:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nx">dd</span><span class="p">(</span><span class="s1">'Something you want to debug here'</span><span class="p">);</span> <span class="c1">// Kinda Laravel, eh?
+</span></code></pre></div> <p>You need to change your <code class="highlighter-rouge">Debugger</code> class, add a <code class="highlighter-rouge">constructor</code> and write this line:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code>public function __construct()
+{
+    $this-&gt;registerMethodAliases();
+}
+</code></pre></div> <p>Then add a <code class="highlighter-rouge">registerMethodAliases</code> method inside it:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code>protected function registerMethodAliases()
+{
+    require_once __DIR__.'/debugger.helpers.php';
+}
+</code></pre></div> <p>You may notice that <code class="highlighter-rouge">registerMethodAliases</code> method require a <code class="highlighter-rouge">debugger.helpers.php</code> file inside it’s folder. So you need to make this file. Inside <code class="highlighter-rouge">components</code> folder, create <code class="highlighter-rouge">debugger.helpers.php</code>. To make sure, see this tree file:</p> <div class="highlighter-rouge"><pre class="highlight"><code>.
+├── assets
+│   └── AppAsset.php
+├── commands
+│   └── HelloController.php
+├── components
+│   ├── debugger.helpers.php -&gt; This is your new file
+│   └── Debugger.php
+</code></pre></div> <p>And here’s <code class="highlighter-rouge">debugger.helpers.php</code> file content:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">app\components\Debugger</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">function_exists</span><span class="p">(</span><span class="s1">'dump'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">dump</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nb">call_user_func_array</span><span class="p">([(</span><span class="k">new</span> <span class="nx">Debugger</span><span class="p">()),</span> <span class="s1">'dump'</span><span class="p">],</span> <span class="nb">func_get_args</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">function_exists</span><span class="p">(</span><span class="s1">'dd'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">dd</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nb">call_user_func_array</span><span class="p">([(</span><span class="k">new</span> <span class="nx">Debugger</span><span class="p">()),</span> <span class="s1">'dd'</span><span class="p">],</span> <span class="nb">func_get_args</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div> <p>As I told before, Yii Component is lazy load, so your <code class="highlighter-rouge">Debugger</code> class will not build unless you need it. To make this <code class="highlighter-rouge">Debugger</code> eager load, change your <code class="highlighter-rouge">config</code> under <code class="highlighter-rouge">bootstrap</code> section, add <code class="highlighter-rouge">debugger</code> in it:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'basic'</span><span class="p">,</span>
+    <span class="s1">'basePath'</span> <span class="o">=&gt;</span> <span class="nb">dirname</span><span class="p">(</span><span class="nx">__DIR__</span><span class="p">),</span>
+    <span class="s1">'bootstrap'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'log'</span><span class="p">,</span> <span class="s1">'debugger'</span><span class="p">],</span> <span class="c1">// Add `debugger` component here
+</span>    <span class="s1">'components'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'debugger'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'app\components\Debugger'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s1">'request'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="c1">// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+</span>            <span class="s1">'cookieValidationKey'</span> <span class="o">=&gt;</span> <span class="s1">'bUNSeF096m4EaatIrhhKSmDTPtBn6Kb8'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s1">'cache'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'yii\caching\FileCache'</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="c1">// [... ommited ...]
+</span>    <span class="p">],</span>
+    <span class="s1">'params'</span> <span class="o">=&gt;</span> <span class="nv">$params</span><span class="p">,</span>
+<span class="p">];</span>
+</code></pre></div> <div class="media image" data-animation="fadeInUp"> <img src="/images/debugging-happily-in-yii2/dd.png" alt="Dumping variable like a boss" /> <div class="caption" data-animation="fadeInRightBig"> <h4>Dumping variable like a boss</h4> <p>After you read this tutorial, you may use <code>dd</code> or <code>dump</code> anywhere you want</p> </div> </div> <p>There you go, you may access <code class="highlighter-rouge">dd</code> or <code class="highlighter-rouge">dump</code> function wherever you want. If you think this article is useful or maybe helpful for you, share it would be nice. Hapy code!</p> </div> <footer> <div class="meta"> <div class="author" data-animation="fadeInUp"> <span class="title">Written by</span> <h4>Krisan Alfa Timur</h4> <p>I'm a expert Web Developer who joins the Open Source realm as a Lumen evangelist.</p> <ul> <li><a href="https://twitter.com/krisanalfa" title="Twitter" class="icon twitter">Twitter</a></li> <li><a href="https://facebook.com/KrisanAlfa.T" title="Facebook" class="icon facebook">Facebook</a></li> <li><a href="https://plus.google.com/+KrisanAlfaTimur" title="Google" class="icon google">Google</a></li> <li><a href="https://www.linkedin.com/in/krisanalfa" title="LinkedIn" class="icon linkedin">LinkedIn</a></li> <li><a href="https://pinterest.com/krisanalfa" title="Pinterest" class="icon pinterest">Pinterest</a></li> <li><a href="https://flickr.com/krisanalfa" title="Flickr" class="icon flickr">Flickr</a></li> </ul> </div> <div class="share" data-animation="fadeInUp"> <span class="title">Share</span> <ul> <li><a href="https://twitter.com/home?status=Dovahkiin,%20naal%20ok%20zin%20los%20vahriin.%20https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html" title="Tweet" class="icon twitter">Tweet</a></li> <li><a href="https://www.facebook.com/sharer/sharer.php?u=https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html" title="Like" class="icon facebook">Like</a></li> <li><a href="https://plus.google.com/share?url=https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html" title="+1" class="icon google">+1</a></li> </ul> </div> </div> <div class="comments" data-animation="fadeInUp"> <span class="title">Comments</span> <div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'krisanalfa'; (function() { var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true; dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js'; (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq); })(); </script> <noscript> Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a> </noscript> </div> <div class="pagination" data-animation="fadeInUp"> <a href="/2016/06/01/funny-developer-comments.html" title="View Older Posts" class="button older">Older</a> </div> </footer> </article> </section> <section class="teaser gradient-1" data-animation="fadeInUp"> <div class="excerpt"> <span class="title">9 minutes</span> <h1><a href="/2016/06/01/funny-developer-comments.html" title="Funny Developer Comments">Funny Developer Comments</a></h1> <p>Here is a collection of funny source code comments, provided by developers all over the world. Take a look at it, it could definitely make your day.</p> <span class="meta">Published <b>Jun 1, 2016</b> in <b></b></span> </div> </section> <footer data-animation="fadeInUp"> <div class="copyright"> <b>Copyright 2016 Krisan Alfa Timur.</b> All Rights Reserved. <a href="mailto:krisan47@gmail.com" title="Send E-Mail">Contact</a> <a href="/feed.xml" title="Subscribe to Feed">RSS</a> </div> </footer> <script src="/assets/jquery-2.2.3.min.js"></script> <script src="/assets/viewportchecker.js"></script> <script src="/assets/scripts.js"></script> </body> </html>

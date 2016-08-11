@@ -7,6 +7,17 @@
     <atom:link href="https://krisanalfa.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Debugging Happily in Yii2</title>
+        
+        
+          <description>Variable Dumping in Yii2 has never been so easy until you read this</description>
+        
+        <pubDate>Thu, 11 Aug 2016 00:00:00 +0700</pubDate>
+        <link>https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html</link>
+        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html</guid>
+      </item>
+    
+      <item>
         <title>Funny Developer Comments</title>
         
         
