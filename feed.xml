@@ -3,8 +3,8 @@
   <channel>
     <title>ZeekLab Blog</title>
     <description>Good source for web development tutorial and technology article.</description>
-    <link>https://krisanalfa.github.io</link>
-    <atom:link href="https://krisanalfa.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:4000</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
         <title>Shared Cache Between Laravel and node.js Using Redis</title>
@@ -13,8 +13,8 @@
           <description>Cache Sharing Between Laravel and node.js Using Redis</description>
         
         <pubDate>Mon, 22 Aug 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</guid>
+        <link>http://localhost:4000/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</guid>
       </item>
     
       <item>
@@ -24,8 +24,8 @@
           <description>Variable Dumping in Yii2 has never been so easy until you read this</description>
         
         <pubDate>Thu, 11 Aug 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html</guid>
+        <link>http://localhost:4000/2016/08/11/debugging-happily-in-yii2.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/11/debugging-happily-in-yii2.html</guid>
       </item>
     
       <item>
@@ -35,8 +35,8 @@
           <description>Here is a collection of funny source code comments, provided by developers all over the world. Take a look at it, it could definitely make your day.</description>
         
         <pubDate>Wed, 01 Jun 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/06/01/funny-developer-comments.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/06/01/funny-developer-comments.html</guid>
+        <link>http://localhost:4000/2016/06/01/funny-developer-comments.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/06/01/funny-developer-comments.html</guid>
       </item>
     
   </channel>
