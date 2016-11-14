@@ -7,6 +7,17 @@
     <atom:link href="https://krisanalfa.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Diffie-Hellman Key Exchange Cryptography in PHP</title>
+        
+        
+          <description>Diffie-Hellman adalah sebuah metode kriptografi yang digunakan untuk mengirimkan secret key secara aman dengan perhitungan matematis. D-F merupakan kriptografi modern yang banyak digunakan. Lantas apa yang membuatnya mumpuni?</description>
+        
+        <pubDate>Mon, 14 Nov 2016 00:00:00 +0700</pubDate>
+        <link>https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html</link>
+        <guid isPermaLink="true">https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html</guid>
+      </item>
+    
+      <item>
         <title>Benchmarking Optimized Laravel vs Unoptimized Laravel</title>
         
         

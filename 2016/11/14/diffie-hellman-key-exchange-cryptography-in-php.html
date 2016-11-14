@@ -1,0 +1,172 @@
+<!DOCTYPE html> <html> <head> <title>Diffie-Hellman Key Exchange Cryptography in PHP</title> <meta charset="utf-8" /> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1" /> <meta name="description" content="Good source for web development tutorial and technology article." /> <meta property="og:type" content="article" /> <meta property="og:site_name" content="ZeekLab" /> <meta property="og:title" content="Diffie-Hellman Key Exchange Cryptography in PHP" /> <meta property="og:description" content="Good source for web development tutorial and technology article." /> <meta property="og:url" content="https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" /> <meta property="og:image" content="https://krisanalfa.github.io/images/header-1.jpg" /> <meta name="twitter:card" content="summary" /> <meta name="twitter:title" content="Diffie-Hellman Key Exchange Cryptography in PHP" /> <meta name="twitter:description" content="Good source for web development tutorial and technology article." /> <meta name="twitter:url" content="https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" /> <meta name="twitter:image" content="https://krisanalfa.github.io/images/header-1.jpg" /> <meta name="twitter:site" content="@krisanalfa" /> <link rel="alternate" href="/feed.xml" type="application/rss+xml" title="Diffie-Hellman Key Exchange Cryptography in PHP" /> <link rel="canonical" href="/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" /> <link type="text/css" rel="stylesheet" href="/assets/styles-16e4d4bf9560b70f23810727da8ebc130eaf04502c902a64d297c43ec88b18d6.css"> <!--[if lt IE 9]> <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]--> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-78621838-1', 'auto'); ga('send', 'pageview'); </script> </head> <body> <header class="animated fadeInDownBig"> <a href="/" title="Back to Homepage" class="logo">ZeekLab Blog</a> <button class="toggle">Menu</button> <nav> <ul> <li><a href="/" title="Home">Home</a></li> </ul> </nav> </header> <section class="content"> <article> <header class="gradient-1" data-animation="fadeInDownBig"> <div class="overlay" style="background-image: url(/images/header-1.jpg);" data-parallax="9"> </div> <div class="excerpt"> <span class="title">9 minutes</span> <h1><a href="/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" title="Diffie-Hellman Key Exchange Cryptography in PHP">Diffie-Hellman Key Exchange Cryptography in PHP</a></h1> <p>Diffie-Hellman adalah sebuah metode kriptografi yang digunakan untuk mengirimkan secret key secara aman dengan perhitungan matematis. D-F merupakan kriptografi modern yang banyak digunakan. Lantas apa yang membuatnya mumpuni?</p> <span class="meta">Published <b>Nov 14, 2016</b></span> </div> <a href="#" title="Scroll" class="scroll">Scroll</a> </header> <div class="body" data-animation="fadeInUp"> <p>Beberapa hari lalu, saya di kantor mendapat sebuah project dimana implementasi logic dan prosedural dikirimkan via API. Dalam satu sesi, yaitu sesi <em>authentication</em>. Kita setuju untuk menggunakan authentication via header (Bearer key). Di tengah perbincangan, salah seorang manager bertanya: “Bearer key ini aman <em>gak</em> sih kita lempar via network?” Well sebenernya aman aja sih selama dikirim via SSL. Atau kalau mau lebih advance, kirim menggunakan JWT. Tapi pertanyaan ini sedikit menggelitik saya.</p> <blockquote> <p>Mungkinkah perbincangan privat dapat dipahami oleh kedua belah pihak, jika <strong>TIDAK</strong> ada dari antara mereka yang bertukar key?</p> </blockquote> <p>Setelah baca-baca <em>resource</em> di sana-sini, akhirnya saya menemukan jawaban. Ya, Diffie-Hellman adalah solusinya. Ingin tau bagaimana algoritma ini bekerja? Check this out!</p> <h2 id="gambaran-umum">Gambaran Umum</h2> <p>Secara umum, Diffie-Hellman algoritma digambarkan seperti berikut:</p> <div class="media image" data-animation="fadeInUp"> <img src="/images/diffie-hellman-key-exchange-cryptography-in-php/Diffie-Hellman_Key_Exchange.svg" alt="" /> </div> <h2 id="tldr">TL;DR</h2> <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">DiffieHellman</span>
+<span class="p">{</span>
+    <span class="sd">/**
+     * Our base-prime
+     *
+     * @var integer
+     */</span>
+    <span class="k">protected</span> <span class="nv">$base</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * Our prime
+     *
+     * @var integer
+     */</span>
+    <span class="k">protected</span> <span class="nv">$prime</span>  <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * Class constructor
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">extension_loaded</span><span class="p">(</span><span class="s1">'bcmath'</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nx">RuntimeException</span><span class="p">(</span><span class="s1">'BC Math extension not loaded!'</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**
+     * Run this to know what happens.
+     *
+     * @return void
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">hello</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$alfaSecretKey</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>  <span class="c1">// Secret key, tidak akan dishare!
+</span>        <span class="nv">$megaSecretKey</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span> <span class="c1">// Secret key, tidak akan dishare!
+</span>
+        <span class="c1">// Modular exponentation
+</span>        <span class="nv">$alfaPublicKey</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">calculatePublicKey</span><span class="p">(</span><span class="nv">$alfaSecretKey</span><span class="p">);</span> <span class="c1">// Alfa mengirimkan kode ini kepada mega
+</span>        <span class="nb">var_dump</span><span class="p">(</span><span class="s1">'Alfa mengirimkan kode ini kepada Mega: '</span><span class="o">.</span><span class="nv">$alfaPublicKey</span><span class="p">);</span>
+
+        <span class="nv">$megaPublicKey</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">calculatePublicKey</span><span class="p">(</span><span class="nv">$megaSecretKey</span><span class="p">);</span> <span class="c1">// Mega mengirimkan kode ini kepada Alfa
+</span>        <span class="nb">var_dump</span><span class="p">(</span><span class="s1">'Mega mengirimkan kode ini kepada alfa: '</span><span class="o">.</span><span class="nv">$megaPublicKey</span><span class="p">);</span>
+
+        <span class="nv">$alfaSaltKey</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">calculateSaltKey</span><span class="p">(</span><span class="nv">$megaPublicKey</span><span class="p">,</span> <span class="nv">$alfaSecretKey</span><span class="p">);</span> <span class="c1">// Alfa menghitung kode yang dikirimkan oleh Mega
+</span>        <span class="nv">$megaSaltKey</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">calculateSaltKey</span><span class="p">(</span><span class="nv">$alfaPublicKey</span><span class="p">,</span> <span class="nv">$megaSecretKey</span><span class="p">);</span> <span class="c1">// Mega menghitung kode yang diberikan Alfa
+</span>
+        <span class="c1">// Pesan Alfa kepada Mega, tidak dikirimkan, akan di-decrypt terlebih dahulu
+</span>        <span class="nv">$plainMessage</span> <span class="o">=</span> <span class="s1">'Hari yang indah, langitnya biru cerah.'</span><span class="p">;</span>
+
+        <span class="c1">// Alfa melakukan encrypting pada pesan yang akan dikirimkan
+</span>        <span class="nv">$encryptedMessage</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">encrypt</span><span class="p">(</span><span class="nv">$alfaSaltKey</span><span class="p">,</span> <span class="nv">$plainMessage</span><span class="p">);</span>
+
+        <span class="c1">// Mega mendapatkan pesan dari Alfa, dan melakukan decrypt pada isi pesan
+</span>        <span class="nv">$decryptedMessage</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">decrypt</span><span class="p">(</span><span class="nv">$megaSaltKey</span><span class="p">,</span> <span class="nv">$encryptedMessage</span><span class="p">);</span>
+
+        <span class="nb">var_dump</span><span class="p">(</span><span class="s1">'Pesan yang dienkripsi oleh Alfa yang diterima oleh Mega '</span><span class="o">.</span><span class="nv">$encryptedMessage</span><span class="p">);</span>
+
+        <span class="c1">// Berikut adalah pesan yang didapatkan oleh Alfa
+</span>        <span class="nb">var_dump</span><span class="p">(</span><span class="s1">'Mega men-decrypt pesan dari Alfa: "'</span><span class="o">.</span><span class="nv">$decryptedMessage</span><span class="o">.</span><span class="s1">'".'</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**
+     * Encrypt a message.
+     *
+     * @param  int $sharedKey
+     * @param  string $message
+     *
+     * @return byte
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">encrypt</span><span class="p">(</span><span class="nv">$sharedKey</span><span class="p">,</span> <span class="nv">$message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$md5ofSharedKey</span> <span class="o">=</span> <span class="nb">md5</span><span class="p">(</span><span class="nv">$sharedKey</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nb">mcrypt_encrypt</span><span class="p">(</span>
+            <span class="nx">MCRYPT_RIJNDAEL_256</span><span class="p">,</span>
+            <span class="nv">$md5ofSharedKey</span><span class="p">,</span>
+            <span class="nv">$message</span><span class="p">,</span>
+            <span class="nx">MCRYPT_MODE_CBC</span><span class="p">,</span>
+            <span class="nb">md5</span><span class="p">(</span><span class="nv">$md5ofSharedKey</span><span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**
+     * Decrypt a message.
+     *
+     * @param  int $sharedKey
+     * @param  byte $message
+     *
+     * @return string
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">decrypt</span><span class="p">(</span><span class="nv">$sharedKey</span><span class="p">,</span> <span class="nv">$message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$md5ofSharedKey</span> <span class="o">=</span> <span class="nb">md5</span><span class="p">(</span><span class="nv">$sharedKey</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nb">rtrim</span><span class="p">(</span>
+            <span class="nb">mcrypt_decrypt</span><span class="p">(</span>
+                <span class="nx">MCRYPT_RIJNDAEL_256</span><span class="p">,</span>
+                <span class="nv">$md5ofSharedKey</span><span class="p">,</span>
+                <span class="nv">$message</span><span class="p">,</span>
+                <span class="nx">MCRYPT_MODE_CBC</span><span class="p">,</span>
+                <span class="nb">md5</span><span class="p">(</span><span class="nv">$md5ofSharedKey</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">"</span><span class="se">\0</span><span class="s2">"</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**
+     * Convert private key to a public key.
+     *
+     * @param  int $mine
+     *
+     * @return int
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">calculatePublicKey</span><span class="p">(</span><span class="nv">$mine</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">bcpowmod</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">base</span><span class="p">,</span> <span class="nv">$mine</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">prime</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**
+     * Determine salt key based on their public key and my public key.
+     *
+     * @param  int $their
+     * @param  int $mine
+     *
+     * @return int
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">calculateSaltKey</span><span class="p">(</span><span class="nv">$their</span><span class="p">,</span> <span class="nv">$mine</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">bcpowmod</span><span class="p">(</span><span class="nv">$their</span><span class="p">,</span> <span class="nv">$mine</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">prime</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="p">(</span><span class="k">new</span> <span class="nx">DiffieHellman</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">hello</span><span class="p">();</span>
+</code></pre></div> <h2 id="implementasi-melalui-matematika">Implementasi Melalui Matematika</h2> <p>Cara termudah dan yang paling autentik dalam implementasi algoritma ini adalah dengan menggunakan <em>multicaptivate group of integers modulo p</em>. Dimana <em>p</em> adalah bilangan prima, dan <em>g</em> adalah akar primitif modulus <em>p</em>. Sebagai contoh:</p> <ol> <li>Alfa dan Mega sama-sama setuju untuk menggunakan bilangan prima 23 dan basis modulo 5. Dalam hal ini berarti, <em>p</em> = 23 dan <em>g</em> = 5. Dimana 5 termasuk dalam akar primitif modulo 23.</li> <li>Alfa memilih angka 6 sebagai <em>secret key</em>-nya. Berarti <em>a</em> = 6. Kemudian Alfa mengirimkan sebuah public key kepada Mega dengan kalkulasi: A = g<sup>6</sup> mod <em>p</em>. Dengan begini, nilai yang diperoleh adalah A = 5<sup>6</sup> mod 23 = 8. Singkatnya, angka <strong>8</strong> ini akan dikirimkan oleh Alfa kepada Mega nantinya.</li> <li>Di lain sisi, Mega memilih angka 15 sebagai secret key-nya. Berarti <em>b</em> = 15. Kemudian Mega juga mengirimkan sebuah public key kepada Alfa dengan kalkulasi yang sama, yaitu: B = g<sup>15</sup> mod <em>p</em>. Dengan begini, nilai yang diperoleh adalah B = 5<sup>15</sup> mod 23 = 19, dimana angka <strong>19</strong> ini akan dikirimkan via network kepada Alfa nantinya.</li> <li>Di suatu sistem, Alfa ingin mengirimkan pesan kepada Mega. Di sini, Alfa membutuhkan public key milik Mega. Mega mengirimkan public key-nya, yaitu angka <strong>19</strong>, kemudian Alfa melakukan perhitungan sebagai berikut s = B<sup>a</sup> mod <em>p</em>. s = 19<sup>6</sup> mod 23 = <strong>2</strong>. Dari sini, Alfa akan menggunakan salt = <strong>2</strong>, untuk melakukan <em>encryption</em> pesannya.</li> <li>Mega yang mendapatkan pesan ini, tidak bisa meminta plain salt kepada Alfa. Dia harus meminta kepada public key milik Alfa. Dimana sebelumnya telah didapatkan public key milik Alfa adalah <strong>8</strong>. Untuk mengetahui salt yang digunakan oleh Alfa, Mega melakukan perhitungan serupa: s = A<sub>b</sub> mod <em>p</em>. s = 8<sup>15</sup> mod 23 = 2. Mega kemudian mendapatkan salt = 2 melalui kalkulasi ini. Dengan salt serupa, maka Mega dapat melalukan decrypting.</li> </ol> <p>Dari kasus ini dapat disimpulkan peraturan dari kriptografi ini sebagai berikut:</p> <ol> <li>Prime number: 23. <strong>TIDAK</strong> dikirim via jaringan. <strong>SEMUA</strong> pemeran mengetahui angka ini.</li> <li>Basis modulo: 5. <strong>TIDAK</strong> dikirim via jaringan. <strong>SEMUA</strong> pemeran mengetahui angka ini.</li> <li>Alfa secret key: 6. <strong>TIDAK</strong> dikirim via jaringan. <strong>HANYA</strong> Alfa yang mengetahui angka ini.</li> <li>Alfa public key: 8. <strong>DIKIRIM</strong> via jaringan. <strong>SEMUA</strong> pemeran mengetahui angka ini.</li> <li>Mega secret key: 15. <strong>TIDAK</strong> dikirim via jaringan. <strong>HANYA</strong> Mega yang mengetahui angka ini.</li> <li>Mega public key: 19. <strong>DIKIRIM</strong> via jaringan. <strong>SEMUA</strong> pemeran mengetahui angka ini.</li> <li>Salt key: 2. <strong>TIDAK</strong> dikirim via jaringan. <strong>SEMUA</strong> pemeran <strong>BISA</strong> mengetahui angka ini <strong>HANYA JIKA</strong> masing-masing pemeran menggunakan Prime dan Basis yang sama.</li> </ol> <h2 id="implementasi-melalui-pemrograman">Implementasi Melalui Pemrograman</h2> <p>Saya akan mencoba membuat implementasi sederhana mengenai kriptografi ini dengan PHP. Pastikan <em>module</em> <code class="highlighter-rouge">bcmath</code> sudah <em>loaded</em>.</p> <ul> <li>Mula-mula tentukan bilangan prima dan nilai basis modulo yang digunakan.</li> </ul> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$prime = 23;
+$base = 5;
+</code></pre></div> <ul> <li>Kemudian tentukan masing-masing <em>secret key</em> yang akan digunakan.</li> </ul> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$alfaSecretKey = 6;
+$megaSecretKey = 8;
+</code></pre></div> <ul> <li>Hitung masing-masing <em>public key</em>. <em>Public key</em> ini akan dikirimkan melalui API.</li> </ul> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$alfaPublicKey = bcpowmod($base, $alfaSecretKey, $mod);
+$megaPublicKey = bcpowmod($base, $megaSecretKey, $mod);
+</code></pre></div> <ul> <li>Setelah masing-masing pemeran mendapatkan <em>public key</em>-nya via <em>network</em>, hitung <em>salt key</em> untuk kebutuhan <em>encrypt</em> / <em>decrypt</em>:</li> </ul> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$alfaSaltKey = bcpowmod($alfaPublicKey, $megaPublicKey, $mod);
+$megaSaltKey = bcpowmod($megaPublicKey, $alfaPublicKey, $mod);
+</code></pre></div> <ul> <li><em>Decrypt</em> pesan Alfa menggunakan <em>salt key</em> yang ada</li> </ul> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$message = 'Hari yang indah, langitnya biru cerah.';
+
+$encryptedMessage = mcrypt_encrypt(
+  MCRYPT_RIJNDAEL_256,
+  md5($alfaSaltKey),
+  $message,
+  MCRYPT_MODE_CBC,
+  md5(md5($alfaSaltKey))
+);
+</code></pre></div> <ul> <li>Mega memperoleh pesan dari Alfa kemudian dia <em>decrypt</em> mengunakan <em>salt key</em> yang ada:</li> </ul> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$decryptedMessage = rtrim(
+  mcrypt_decrypt(
+    MCRYPT_RIJNDAEL_256,
+    md5($megaSaltKey),
+    $encryptedMessage,
+    MCRYPT_MODE_CBC,
+    md5(md5($megaSaltKey))
+  ),
+"\0");
+</code></pre></div> <ul> <li>Hasil <code class="highlighter-rouge">$decryptedMessage</code> pasti akan sama dengan <code class="highlighter-rouge">$message</code>.</li> </ul> <h2 id="consideration">Consideration</h2> <p>Mungkin kalian berpikir, bagaimana jika memang ada seorang ‘Eve’ (Eavesdropper) yang melakukan <em>sniffing</em>, dan mendapatkan salah satu public key dari pemeran? Mudahnya, Eve harus mengetahui basis modulo dan bilangan prima yang digunakan oleh pemeran. Jika memang dapat diketaui, Eve harus melakukan perhitungan untuk menebak secret key yang digunakan. Bayangkan saja jika Eve mengetahui:</p> <ol> <li>Prime number: 23.</li> <li>Basis modulo: 5.</li> <li>X public key: 8.</li> </ol> <p>Tugas dia selanjutnya adalah mengetahui X secret key. Hal ini dapat dilakukan dengan membuat script sederhana sebagai berikut:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$limit = 20; // perbesar limit jika diperlukan
+$eavesDroped = 8; // public key yang dikirim over network
+
+for ($i = 0; $i <span class="err">&lt;</span> $limit; $i++) {
+    if ((int) bcpowmod(5, $i, 23) === $eavesDroped) {
+        var_dump('Salah satu dari pemeran menggunakan Private Key: ' . $i);
+        exit();
+    }
+}
+</code></pre></div> <p>Jika angka yang didapatkan memang mudah ditemukan dengan sedikit kesabaran. Namun apa jadinya jika public key yang dia dapatkan:</p> <div class="language-php highlighter-rouge"><pre class="highlight"><code>$eavesDroped = 128378792730192804398340;
+</code></pre></div> <p>Ya Eve akan kesulitan untuk memecahkan sandinya, karena dia butuh waktu yang sangat lama. Kurang lebih sekitar <code class="highlighter-rouge">40.708.648.126.012</code> tahun. Inilah yang dinamakan <em>discrete logarithm problem</em>. Percayalah, untuk menebak angka <code class="highlighter-rouge">23</code> dan <code class="highlighter-rouge">5</code> saja sudah sulit sekali dilakukan. Apalagi jika public key-nya sebesar ini. Jika masih kurang aman, kamu sendiri bisa menambahkan fitur lain, semisal:</p> <ol> <li>Prime number: .</li> <li>Basis modulo: .</li> </ol> <p>Oya, <em>BTW</em>, Telegram App juga menggunakan <em>Diffie-Hellman</em> algoritma dalam mengenkripsi pesan yang dikirimkan melalui protokolnya. Bagaimana? Sudah mulai dapat ide? Share this thought if you think it’s useful! Happy code!</p> </div> <footer> <div class="meta"> <div class="author" data-animation="fadeInUp"> <span class="title">Written by</span> <h4>Krisan Alfa Timur</h4> <p>I'm an expert Web Developer and Open Source enthusiast.</p> <ul> <li><a href="https://twitter.com/krisanalfa" title="Twitter" class="icon twitter">Twitter</a></li> <li><a href="https://facebook.com/KrisanAlfa.T" title="Facebook" class="icon facebook">Facebook</a></li> <li><a href="https://plus.google.com/+KrisanAlfaTimur" title="Google" class="icon google">Google</a></li> <li><a href="https://www.linkedin.com/in/krisanalfa" title="LinkedIn" class="icon linkedin">LinkedIn</a></li> <li><a href="https://pinterest.com/krisanalfa" title="Pinterest" class="icon pinterest">Pinterest</a></li> <li><a href="https://flickr.com/krisanalfa" title="Flickr" class="icon flickr">Flickr</a></li> </ul> </div> <div class="share" data-animation="fadeInUp"> <span class="title">Share</span> <ul> <li><a href="https://twitter.com/home?status=Good%20source%20for%20web%20development%20tutorial%20and%20technology%20article.%20https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" title="Tweet" class="icon twitter">Tweet</a></li> <li><a href="https://www.facebook.com/sharer/sharer.php?u=https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" title="Like" class="icon facebook">Like</a></li> <li><a href="https://plus.google.com/share?url=https://krisanalfa.github.io/2016/11/14/diffie-hellman-key-exchange-cryptography-in-php.html" title="+1" class="icon google">+1</a></li> </ul> </div> </div> <div class="comments" data-animation="fadeInUp"> <span class="title">Comments</span> <div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'krisanalfa'; (function() { var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true; dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js'; (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq); })(); </script> <noscript> Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a> </noscript> </div> <div class="pagination" data-animation="fadeInUp"> <a href="/2016/08/29/benchmarking-optimized-laravel-vs-unoptimized-laravel.html" title="View Older Posts" class="button older">Older</a> </div> </footer> </article> </section> <section class="teaser gradient-1" data-animation="fadeInUp"> <div class="excerpt"> <span class="title">9 minutes</span> <h1><a href="/2016/08/29/benchmarking-optimized-laravel-vs-unoptimized-laravel.html" title="Benchmarking Optimized Laravel vs Unoptimized Laravel">Benchmarking Optimized Laravel vs Unoptimized Laravel</a></h1> <p>In this post, I'll share about how to benchmark your Laravel-based application and plot their result into a graph image.</p> <span class="meta">Published <b>Aug 29, 2016</b> in <b></b></span> </div> </section> <footer data-animation="fadeInUp"> <div class="copyright"> <b>Copyright 2016 Krisan Alfa Timur.</b> All Rights Reserved. <a href="mailto:krisan47@gmail.com" title="Send E-Mail">Contact</a> <a href="/feed.xml" title="Subscribe to Feed">RSS</a> </div> </footer> <script type="text/javascript" src="/assets/scripts-50870bcb019b5518e747b002adc918ee85283adf011c241781e9c9a5946a0f2d.js"></script> </body> </html>
