@@ -3,8 +3,21 @@
   <channel>
     <title>ZeekLab Blog</title>
     <description>Good source for web development tutorial and technology article.</description>
-    <link>https://krisanalfa.github.io</link>
-    <atom:link href="https://krisanalfa.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:4000</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>Debugging Laravel Application in Visual Studio Code</title>
+        
+        
+          <description>&lt;p&gt;Ever feel that you suck a lot when debugging a bug? QA knows something wrong but Developer doesn’t know where to fix it, especially if the Developer is using PHP. If you use Laravel, you may use &lt;code class=&quot;highlighter-rouge&quot;&gt;dd&lt;/code&gt; here and there, well that’s not quite good. We know that other language like Java or C# is slightly easier to debug, like come on we can set a breakpoint anywhere and do a step back or step forward. This is where Visual Studio Code comes in. With an external plugin and little adjusment to your environment, we can debugging our PHP Application (in this case, Laravel Application), say goodbye to &lt;code class=&quot;highlighter-rouge&quot;&gt;dd&lt;/code&gt;!&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Tue, 16 May 2017 00:00:00 +0700</pubDate>
+        <link>http://localhost:4000/2017/05/16/debugging-laravel-application-in-visual-studio-code.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/05/16/debugging-laravel-application-in-visual-studio-code.html</guid>
+      </item>
     
       <item>
         <title>Vue.js Compared to Angular 2</title>
@@ -13,8 +26,8 @@
           <description>You already know that Vue.js is one of the top JavaScript frameworks and it is replacing Angular 2 and React in many cases. This brings in the topic of this blog 'How Vue.js compared to Angular 2?'</description>
         
         <pubDate>Fri, 20 Jan 2017 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2017/01/20/vue-js-compared-to-angular-2.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2017/01/20/vue-js-compared-to-angular-2.html</guid>
+        <link>http://localhost:4000/2017/01/20/vue-js-compared-to-angular-2.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/01/20/vue-js-compared-to-angular-2.html</guid>
       </item>
     
       <item>
@@ -24,8 +37,8 @@
           <description>In this post, I'll share about how to benchmark your Laravel-based application and plot their result into a graph image.</description>
         
         <pubDate>Mon, 29 Aug 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/08/29/benchmarking-optimized-laravel-vs-unoptimized-laravel.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/29/benchmarking-optimized-laravel-vs-unoptimized-laravel.html</guid>
+        <link>http://localhost:4000/2016/08/29/benchmarking-optimized-laravel-vs-unoptimized-laravel.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/29/benchmarking-optimized-laravel-vs-unoptimized-laravel.html</guid>
       </item>
     
       <item>
@@ -35,8 +48,8 @@
           <description>Here's what you can do to optimize your Laravel based application on production.</description>
         
         <pubDate>Fri, 26 Aug 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/08/26/optimizing-your-laravel-application.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/26/optimizing-your-laravel-application.html</guid>
+        <link>http://localhost:4000/2016/08/26/optimizing-your-laravel-application.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/26/optimizing-your-laravel-application.html</guid>
       </item>
     
       <item>
@@ -46,8 +59,8 @@
           <description>Cache Sharing Between Laravel and node.js Using Redis</description>
         
         <pubDate>Mon, 22 Aug 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</guid>
+        <link>http://localhost:4000/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/22/shared-cache-between-laravel-and-node-js-using-redis.html</guid>
       </item>
     
       <item>
@@ -57,8 +70,8 @@
           <description>Variable Dumping in Yii2 has never been so easy until you read this</description>
         
         <pubDate>Thu, 11 Aug 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/08/11/debugging-happily-in-yii2.html</guid>
+        <link>http://localhost:4000/2016/08/11/debugging-happily-in-yii2.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/08/11/debugging-happily-in-yii2.html</guid>
       </item>
     
       <item>
@@ -68,8 +81,8 @@
           <description>Here is a collection of funny source code comments, provided by developers all over the world. Take a look at it, it could definitely make your day.</description>
         
         <pubDate>Wed, 01 Jun 2016 00:00:00 +0700</pubDate>
-        <link>https://krisanalfa.github.io/2016/06/01/funny-developer-comments.html</link>
-        <guid isPermaLink="true">https://krisanalfa.github.io/2016/06/01/funny-developer-comments.html</guid>
+        <link>http://localhost:4000/2016/06/01/funny-developer-comments.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/06/01/funny-developer-comments.html</guid>
       </item>
     
   </channel>
